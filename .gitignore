@@ -1,0 +1,22 @@
+# IntelliJ settings (personal to your machine)
+.idea/
+*.iml
+out/
+
+# Java build output (Maven and Gradle)
+target/
+build/
+.gradle/
+
+# Node and Angular
+node_modules/
+dist/
+.angular/
+
+# Secrets and local settings - never commit these
+.env
+*.env
+
+# Operating system clutter
+.DS_Store
+Thumbs.db
