@@ -3,6 +3,7 @@ import { signal } from '@angular/core';
 import { GoalsDashboard } from './goals-dashboard';
 import { GoalData } from '../services/goal-data';
 import { Goal } from '../models/goal.model';
+import {provideRouter} from '@angular/router';
 
 describe('GoalsDashboard', () => {
   const fakeGoals = signal<Goal[]>([]);
@@ -14,7 +15,9 @@ describe('GoalsDashboard', () => {
 
     await TestBed.configureTestingModule({
       imports: [GoalsDashboard],
-      providers: [{ provide: GoalData, useValue: { goals: fakeGoals.asReadonly() } }],
+      providers: [
+        provideRouter([]),
+        { provide: GoalData, useValue: { goals: fakeGoals.asReadonly() } }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(GoalsDashboard);

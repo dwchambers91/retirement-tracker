@@ -9,4 +9,11 @@ export class GoalData {
   ]);
 
   readonly goals = this.goalsSignal.asReadonly();
+
+  addGoal(newGoal: Omit<Goal, 'id'>): Goal {
+    const nextId = Math.max(0, ...this.goalsSignal().map((g) => g.id)) + 1;
+    const goal: Goal = { ...newGoal, id: nextId };
+    this.goalsSignal.update((goals) => [...goals, goal]);
+    return goal;
+  }
 }
