@@ -1,6 +1,6 @@
 <section class="dashboard">
   <h2>My retirement goals</h2>
-
+  <a routerLink="/goals/new" data-testid="add-goal-link">Add a goal</a>
   @if (goals().length === 0) {
     <p class="empty" data-testid="empty-message">
       You don't have any goals yet. Create one to start tracking your progress.

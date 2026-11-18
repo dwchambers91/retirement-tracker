@@ -1,0 +1,50 @@
+<section class="goal-form">
+  <h2>Create a goal</h2>
+
+  <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+    <div class="field">
+      <label for="name">Goal name</label>
+      <input id="name" type="text" formControlName="name" data-testid="name-input" />
+      @if (showError('name')) {
+        <p class="error" data-testid="name-error">Enter a name of up to 50 characters.</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="targetAmount">Target amount ($)</label>
+      <input id="targetAmount" type="number" formControlName="targetAmount" data-testid="target-amount-input" />
+      @if (showError('targetAmount')) {
+        <p class="error" data-testid="target-amount-error">Enter an amount of $1 or more.</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="targetAge">Target retirement age</label>
+      <input id="targetAge" type="number" formControlName="targetAge" data-testid="target-age-input" />
+      @if (showError('targetAge')) {
+        <p class="error" data-testid="target-age-error">Enter an age from 18 to 100.</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="currentSavings">Current savings ($)</label>
+      <input id="currentSavings" type="number" formControlName="currentSavings" data-testid="current-savings-input" />
+      @if (showError('currentSavings')) {
+        <p class="error" data-testid="current-savings-error">Enter $0 or more.</p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="monthlyContribution">Monthly contribution ($)</label>
+      <input id="monthlyContribution" type="number" formControlName="monthlyContribution" data-testid="monthly-contribution-input" />
+      @if (showError('monthlyContribution')) {
+        <p class="error" data-testid="monthly-contribution-error">Enter $0 or more.</p>
+      }
+    </div>
+
+    <div class="actions">
+      <button type="submit" data-testid="save-button">Save goal</button>
+      <a routerLink="/">Cancel</a>
+    </div>
+  </form>
+</section>
