@@ -1,0 +1,21 @@
+<section class="dashboard">
+  <h2>My retirement goals</h2>
+
+  @if (goals().length === 0) {
+    <p class="empty" data-testid="empty-message">
+      You don't have any goals yet. Create one to start tracking your progress.
+    </p>
+  } @else {
+    <ul class="goal-list">
+      @for (goal of goals(); track goal.id) {
+        <li class="goal-card" data-testid="goal-card">
+          <h3>{{ goal.name }}</h3>
+          <p>
+            Target: {{ goal.targetAmount | currency: 'USD' : 'symbol' : '1.0-0' }}
+            by age {{ goal.targetAge }}
+          </p>
+        </li>
+      }
+    </ul>
+  }
+</section>
