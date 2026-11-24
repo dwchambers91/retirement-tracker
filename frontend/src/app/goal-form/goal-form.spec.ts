@@ -34,6 +34,7 @@ describe('GoalForm', () => {
 
   function fillValidForm(): void {
     type('name-input', 'Retire at 62');
+    type('current-age-input', '35');
     type('target-amount-input', '900000');
     type('target-age-input', '62');
     type('current-savings-input', '40000');
@@ -73,11 +74,22 @@ describe('GoalForm', () => {
 
     expect(addGoal).toHaveBeenCalledWith({
       name: 'Retire at 62',
+      currentAge: 35,
       targetAmount: 900_000,
       targetAge: 62,
       currentSavings: 40_000,
       monthlyContribution: 1_000,
     });
     expect(router.navigate).toHaveBeenCalledWith(['/']);
+  });
+
+  it('does not save when the target age is not after the current age', async () => {
+    fillValidForm();
+    type('current-age-input', '62');
+
+    await submit();
+
+    expect(page.querySelector('[data-testid="target-age-order-error"]')).toBeTruthy();
+    expect(addGoal).not.toHaveBeenCalled();
   });
 });

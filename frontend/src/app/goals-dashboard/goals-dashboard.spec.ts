@@ -24,6 +24,26 @@ describe('GoalsDashboard', () => {
     page = fixture.nativeElement;
   });
 
+  it('shows "On track" when savings already meet the target', async () => {
+    fakeGoals.set([
+      { id: 1, name: 'Covered', currentAge: 30, targetAge: 60, targetAmount: 100_000, currentSavings: 200_000, monthlyContribution: 0 },
+    ]);
+    await fixture.whenStable();
+
+    expect(page.querySelector('[data-testid="goal-status"]')?.textContent).toContain('On track');
+    expect(page.querySelector('[data-testid="extra-needed"]')).toBeNull();
+  });
+
+  it('shows "Behind" and the extra monthly amount when short of the target', async () => {
+    fakeGoals.set([
+      { id: 1, name: 'Short', currentAge: 30, targetAge: 60, targetAmount: 1_000_000, currentSavings: 0, monthlyContribution: 0 },
+    ]);
+    await fixture.whenStable();
+
+    expect(page.querySelector('[data-testid="goal-status"]')?.textContent).toContain('Behind');
+    expect(page.querySelector('[data-testid="extra-needed"]')).toBeTruthy();
+  });
+
   it('shows a message when there are no goals', async () => {
     await fixture.whenStable();
 
@@ -33,10 +53,12 @@ describe('GoalsDashboard', () => {
 
   it('shows one card per goal with its name, target amount, and age', async () => {
     fakeGoals.set([
-      { id: 1, name: 'Retire at 60', targetAmount: 1_200_000, targetAge: 60, currentSavings: 0, monthlyContribution: 0 },
-      { id: 2, name: 'Early retirement', targetAmount: 1_500_000, targetAge: 55, currentSavings: 0, monthlyContribution: 0 },
+      { id: 1, name: 'Retire at 60', currentAge:30, targetAmount: 1_200_000, targetAge: 60, currentSavings: 0, monthlyContribution: 0 },
+      { id: 2, name: 'Early retirement', currentAge:30, targetAmount: 1_500_000, targetAge: 55, currentSavings: 0, monthlyContribution: 0 },
     ]);
     await fixture.whenStable();
+
+
 
     const cards = page.querySelectorAll('[data-testid="goal-card"]');
     expect(cards.length).toBe(2);

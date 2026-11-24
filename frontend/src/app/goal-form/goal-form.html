@@ -19,10 +19,21 @@
     </div>
 
     <div class="field">
+      <label for="currentAge">Your current age</label>
+      <input id="currentAge" type="number" formControlName="currentAge" data-testid="current-age-input" />
+      @if (showError('currentAge')) {
+        <p class="error" data-testid="current-age-error">Enter an age from 18 to 99.</p>
+      }
+    </div>
+
+    <div class="field">
       <label for="targetAge">Target retirement age</label>
       <input id="targetAge" type="number" formControlName="targetAge" data-testid="target-age-input" />
       @if (showError('targetAge')) {
         <p class="error" data-testid="target-age-error">Enter an age from 18 to 100.</p>
+      }
+      @if (form.hasError('targetAgeNotAfterCurrentAge') && (form.controls.targetAge.touched || submitted())) {
+        <p class="error" data-testid="target-age-order-error">Target age must be later than your current age.</p>
       }
     </div>
 

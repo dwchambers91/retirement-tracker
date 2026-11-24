@@ -18,6 +18,7 @@ describe('GoalData', () => {
 
     const added = service.addGoal({
       name: 'Test Goal',
+      currentAge: 40,
       targetAmount: 500_000,
       targetAge: 65,
       currentSavings: 1_000,
