@@ -30,4 +30,29 @@ describe('GoalData', () => {
     expect(service.goals()).toContainEqual(added);
     expect(new Set(ids).size).toBe(ids.length);
   })
+
+  it('finds a goal by id, or returns undefined', () => {
+    const first = service.goals()[0];
+
+    expect(service.getGoal(first.id)).toEqual(first);
+    expect(service.getGoal(-1)).toBeUndefined();
+  });
+
+  it('updates only the goal with a matching id', () => {
+    const [first, second] = service.goals();
+
+    service.updateGoal({ ...first, name: 'Renamed' });
+
+    expect(service.getGoal(first.id)?.name).toBe('Renamed');
+    expect(service.getGoal(second.id)).toEqual(second);
+  });
+
+  it('deletes only the goal with a matching id', () => {
+    const [first, second] = service.goals();
+
+    service.deleteGoal(first.id);
+
+    expect(service.getGoal(first.id)).toBeUndefined();
+    expect(service.getGoal(second.id)).toEqual(second);
+  });
 });

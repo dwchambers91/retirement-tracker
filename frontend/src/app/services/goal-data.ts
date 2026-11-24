@@ -16,4 +16,16 @@ export class GoalData {
     this.goalsSignal.update((goals) => [...goals, goal]);
     return goal;
   }
+
+  getGoal(id: number): Goal | undefined {
+    return this.goalsSignal().find(g => g.id === id);
+  }
+
+  updateGoal(update: Goal)  {
+    this.goalsSignal.update((goals) => goals.map((g) => (g.id === update.id ? update : g)));
+  }
+
+  deleteGoal(id: number): void {
+    this.goalsSignal.update((goals) => goals.filter((g) => g.id !== id));
+  }
 }

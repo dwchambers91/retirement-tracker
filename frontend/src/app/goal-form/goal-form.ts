@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit, computed, input } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { GoalData } from '../services/goal-data';
@@ -20,7 +20,11 @@ function targetAgeAfterCurrentAge(group: AbstractControl): ValidationErrors | nu
   templateUrl: './goal-form.html',
   styleUrl: './goal-form.scss',
 })
-export class GoalForm {
+
+export class GoalForm implements OnInit {
+  readonly id = input<string>();
+  protected readonly isEditing = computed(() => this.id() !== undefined);
+
   private readonly fb = inject(FormBuilder);
   private readonly goalData = inject(GoalData);
   private readonly router = inject(Router);
@@ -43,6 +47,21 @@ export class GoalForm {
     return control.invalid && (control.touched || this.submitted());
   }
 
+  ngOnInit(): void {
+    const id = this.id();
+    if (id === undefined) {
+      return;
+    }
+
+    const goal = this.goalData.getGoal(Number(id));
+    if (!goal){
+      this.router.navigate(['/']);
+      return;
+    }
+
+    this.form.patchValue(goal);
+  }
+
   protected save(): void {
     this.submitted.set(true);
     if (this.form.invalid) {
@@ -50,14 +69,21 @@ export class GoalForm {
     }
 
     const value = this.form.getRawValue();
-    this.goalData.addGoal({
+    const goalValues = {
       name: value.name.trim(),
       currentAge: value.currentAge!,
       targetAmount: value.targetAmount!,
       targetAge: value.targetAge!,
       currentSavings: value.currentSavings!,
       monthlyContribution: value.monthlyContribution!,
-    });
+    };
+
+    const id = this.id();
+    if (id === undefined) {
+      this.goalData.addGoal(goalValues);
+    } else {
+      this.goalData.updateGoal({ ...goalValues, id: Number(id) });
+    }
     this.router.navigate(['/']);
   }
 }
