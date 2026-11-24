@@ -3,6 +3,7 @@ import { CurrencyPipe, PercentPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { GoalData } from '../services/goal-data';
 import { DEFAULT_ANNUAL_RETURN, projectGoal } from '../projection/projection';
+import { Goal } from '../models/goal.model';
 
 @Component({
   selector: 'app-goals-dashboard',
@@ -14,7 +15,14 @@ export class GoalsDashboard {
   private readonly goalData = inject(GoalData);
 
   protected readonly assumedReturn = DEFAULT_ANNUAL_RETURN;
+
   protected readonly goalViews = computed(() =>
     this.goalData.goals().map((goal) => ({ goal, projection: projectGoal(goal) })),
   );
+
+  protected remove(goal: Goal): void {
+    if (window.confirm(`Delete "${goal.name}"? This action cannot be undone.`)) {
+      this.goalData.deleteGoal(goal.id);
+    }
+  }
 }

@@ -1,5 +1,5 @@
 <section class="goal-form">
-  <h2>Create a goal</h2>
+  <h2 data-testid="form-title">{{ isEditing() ? 'Edit goal' : 'Create a goal' }}</h2>
 
   <form [formGroup]="form" (ngSubmit)="save()" novalidate>
     <div class="field">
@@ -54,7 +54,7 @@
     </div>
 
     <div class="actions">
-      <button type="submit" data-testid="save-button">Save goal</button>
+      <button type="submit" data-testid="save-button">{{ isEditing() ? 'Save changes' : 'Save goal' }}</button>
       <a routerLink="/">Cancel</a>
     </div>
   </form>

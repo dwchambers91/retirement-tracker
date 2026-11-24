@@ -4,24 +4,61 @@ import { GoalsDashboard } from './goals-dashboard';
 import { GoalData } from '../services/goal-data';
 import { Goal } from '../models/goal.model';
 import {provideRouter} from '@angular/router';
+import {vi} from 'vitest';
 
 describe('GoalsDashboard', () => {
   const fakeGoals = signal<Goal[]>([]);
+  const deleteGoal =vi.fn();
   let fixture: ComponentFixture<GoalsDashboard>;
   let page: HTMLElement;
 
   beforeEach(async () => {
     fakeGoals.set([]);
+    deleteGoal.mockReset();
 
     await TestBed.configureTestingModule({
       imports: [GoalsDashboard],
       providers: [
         provideRouter([]),
-        { provide: GoalData, useValue: { goals: fakeGoals.asReadonly() } }],
+        { provide: GoalData, useValue: { goals: fakeGoals.asReadonly(), deleteGoal: deleteGoal } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(GoalsDashboard);
     page = fixture.nativeElement;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  const oneGoal: Goal = { id: 7, name: 'Retire at 60', currentAge: 35, targetAge: 60, targetAmount: 1_200_000, currentSavings: 85_000, monthlyContribution: 1_500 };
+
+  it('links each goal to its edit page', async () => {
+    fakeGoals.set([oneGoal]);
+    await fixture.whenStable();
+
+    expect(page.querySelector('[data-testid="edit-link"]')?.getAttribute('href')).toBe('/goals/7/edit');
+  });
+
+  it('deletes a goal after the user confirms', async () => {
+    fakeGoals.set([oneGoal]);
+    await fixture.whenStable();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+    page.querySelector<HTMLButtonElement>('[data-testid="delete-button"]')!.click();
+
+    expect(deleteGoal).toHaveBeenCalledWith(7);
+  });
+
+  it('keeps the goal when the user cancels', async () => {
+    fakeGoals.set([oneGoal]);
+    await fixture.whenStable();
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+    page.querySelector<HTMLButtonElement>('[data-testid="delete-button"]')!.click();
+
+    expect(deleteGoal).not.toHaveBeenCalled();
   });
 
   it('shows "On track" when savings already meet the target', async () => {
